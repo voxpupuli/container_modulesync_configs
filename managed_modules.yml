@@ -1,2 +1,4 @@
 ---
+- container-puppetdb
+- container-puppetserver
 - container-voxbox
