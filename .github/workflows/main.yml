@@ -1,0 +1,21 @@
+name: noop run
+
+on:
+  pull_request: {}
+  push:
+    branches:
+      - master
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    name: Run msync --noop against all modules
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+          bundler-cache: true
+      - name: Run msync --noop
+        run: bundle exec msync update --noop --git-base=https://github.com/

@@ -1,0 +1,5 @@
+---
+namespace: voxpupuli
+git_base: 'git@github.com:'
+branch: modulesync
+message: "Update from voxpupuli modulesync_config"
