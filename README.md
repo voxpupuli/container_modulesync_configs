@@ -37,7 +37,14 @@ bundle config set --local path 'vendor/bundle'
 bundle install
 
 export GITHUB_TOKEN=your_github_pat
-bundle exec msync update -f container-voxbox --message "modulesync $(git describe)" --pr --pr-labels modulesync --pr-title "modulesync $(git describe)" --verbose
+export GITHUB_BASE_URL="https://api.github.com" # see https://github.com/voxpupuli/modulesync/issues/250
+bundle exec msync update \
+  -f container-voxbox \
+  --message "modulesync $(git describe)" \
+  --pr \
+  --pr-labels modulesync \
+  --pr-title "modulesync $(git describe)" \
+  --verbose
 ```
 
 ---
