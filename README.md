@@ -39,11 +39,9 @@ bundle install
 export GITHUB_TOKEN=your_github_pat
 export GITHUB_BASE_URL="https://api.github.com" # see https://github.com/voxpupuli/modulesync/issues/250
 bundle exec msync update \
-  -f container-voxbox \
-  --message "modulesync $(git describe)" \
+  -f container-test \
   --pr \
   --pr-labels modulesync \
-  --pr-title "modulesync $(git describe)" \
   --verbose
 ```
 
