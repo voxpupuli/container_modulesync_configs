@@ -25,7 +25,7 @@ jobs:
 
   update-all-voxpupuli-modules:
     runs-on: ubuntu-latest
-    name: Run msync against all modules
+    name: Run msync against all Vox Pupuli modules
     if: ${{ github.event_name == 'workflow_dispatch' }}
     steps:
       - uses: actions/checkout@v4
@@ -44,6 +44,4 @@ jobs:
             --pr-labels modulesync \
             --pr-title Modulesync \
             --git-base=https://github.com/ \
-            --namespace openvoxproject \
-            --managed-modules-conf managed_modules_openvox.yml \
             --noop
