@@ -2,4 +2,4 @@
 namespace: voxpupuli
 git_base: 'git@github.com:'
 branch: modulesync
-message: "Update from voxpupuli modulesync_config"
+message: "Update from voxpupuli/container_modulesync_config"
