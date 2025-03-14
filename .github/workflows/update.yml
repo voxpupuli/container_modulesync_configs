@@ -20,9 +20,9 @@ jobs:
         run: |
           git config --global user.name "VoxBot"
           git config --global user.email "voxbot@voxpupuli.org"
-          export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          export GITHUB_TOKEN=${{ secrets.VOXPUPULI_PAT }}
           bundle exec msync update \
             --pr \
             --pr-labels modulesync \
             --pr-title Modulesync \
-            --git-base=https://github.com/
+            --git-base="https://github.com/"
