@@ -1,8 +1,6 @@
 ---
-- container-puppetdb
-- container-puppetserver
-- container-voxbox
-- container-test
-- container-semantic-release
 - container-commitlint
 - container-r10k
+- container-semantic-release
+- container-test
+- container-voxbox
