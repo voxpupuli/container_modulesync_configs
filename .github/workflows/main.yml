@@ -1,6 +1,7 @@
 name: noop run
 
 on:
+  workflow_dispatch: {}
   pull_request: {}
   push:
     branches:
@@ -12,10 +13,28 @@ jobs:
     name: Run msync --noop against all modules
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2
           bundler-cache: true
+
       - name: Run msync --noop
         run: bundle exec msync update --noop --git-base=https://github.com/
+
+  update-all-modules:
+    runs-on: ubuntu-latest
+    name: Run msync against all modules
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.4
+          bundler-cache: true
+
+      - name: Run msync
+        run: bundle exec msync update --git-base=https://github.com/ --noop

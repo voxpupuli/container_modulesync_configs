@@ -46,7 +46,7 @@ bundle exec msync update \
   --noop
 ```
 
-## Run ModuleSync with for another Organization
+## Run ModuleSync for another Organization
 
 ```shell
 export GITHUB_TOKEN=your_github_pat
