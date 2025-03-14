@@ -39,6 +39,8 @@ jobs:
 
       - name: Run msync
         run: |
+          git config --global user.name "VoxBot"
+          git config --global user.email "voxbot@voxpupuli.org"
           export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           bundle exec msync update \
             --pr \
