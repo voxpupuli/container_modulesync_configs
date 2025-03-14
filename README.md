@@ -37,15 +37,28 @@ bundle config set --local path 'vendor/bundle'
 bundle install
 
 export GITHUB_TOKEN=your_github_pat
-export GITHUB_BASE_URL="https://api.github.com" # see https://github.com/voxpupuli/modulesync/issues/250
 bundle exec msync update \
   -f container-test \
   --pr \
   --pr-labels modulesync \
-  --verbose
+  --pr-title Modulesync \
+  --git-base=https://github.com/ \
+  --noop
 ```
 
----
+## Run ModuleSync with for another Organization
+
+```shell
+export GITHUB_TOKEN=your_github_pat
+bundle exec msync update \
+  --pr \
+  --pr-labels modulesync \
+  --pr-title Modulesync \
+  --git-base=https://github.com/ \
+  --namespace openvoxproject \
+  --managed-modules-conf managed_modules_openvox.yml \
+  --noop
+```
 
 ## Defining Module Files
 
