@@ -43,5 +43,4 @@ jobs:
             --pr \
             --pr-labels modulesync \
             --pr-title Modulesync \
-            --git-base=https://github.com/ \
-            --noop
+            --git-base=https://github.com/
