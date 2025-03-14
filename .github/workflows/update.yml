@@ -17,6 +17,11 @@ jobs:
           bundler-cache: true
 
       - name: Run msync
+        env:
+          GIT_COMMITTER_NAME: 'VoxBox'
+          GIT_COMMITTER_EMAIL: 'voxbot@voxpupuli.org'
+          GIT_AUTHOR_NAME: 'VoxBox'
+          GIT_AUTHOR_EMAIL: 'voxbot@voxpupuli.orgm'
         run: |
           git config --global user.name "VoxBot"
           git config --global user.email "voxbot@voxpupuli.org"
