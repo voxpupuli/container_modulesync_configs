@@ -23,7 +23,7 @@ jobs:
       - name: Run msync --noop
         run: bundle exec msync update --noop --git-base=https://github.com/
 
-  update-all-modules:
+  update-all-voxpupuli-modules:
     runs-on: ubuntu-latest
     name: Run msync against all modules
     if: ${{ github.event_name == 'workflow_dispatch' }}
@@ -37,4 +37,13 @@ jobs:
           bundler-cache: true
 
       - name: Run msync
-        run: bundle exec msync update --git-base=https://github.com/ --noop
+        run: |
+          export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          bundle exec msync update \
+            --pr \
+            --pr-labels modulesync \
+            --pr-title Modulesync \
+            --git-base=https://github.com/ \
+            --namespace openvoxproject \
+            --managed-modules-conf managed_modules_openvox.yml \
+            --noop
