@@ -37,6 +37,8 @@ bundle config set --local path 'vendor/bundle'
 bundle install
 
 export GITHUB_TOKEN=your_github_pat
+export GITHUB_BASE_URL="https://api.github.com"
+
 bundle exec msync update \
   -f container-test \
   --pr \
@@ -50,6 +52,8 @@ bundle exec msync update \
 
 ```shell
 export GITHUB_TOKEN=your_github_pat
+export GITHUB_BASE_URL="https://api.github.com"
+
 bundle exec msync update \
   --pr \
   --pr-labels modulesync \
