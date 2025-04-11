@@ -39,13 +39,22 @@ bundle install
 export GITHUB_TOKEN=your_github_pat
 export GITHUB_BASE_URL="https://api.github.com"
 
+# for one module
 bundle exec msync update \
   -f container-test \
   --pr \
   --pr-labels modulesync \
-  --pr-title Modulesync \
-  --git-base=https://github.com/ \
-  --noop
+  --pr-title "chore: Modulesync" \
+  --message "chore: Modulesync update" \
+  --git-base="https://github.com/"
+
+# for all modules
+bundle exec msync update \
+  --pr \
+  --pr-labels modulesync \
+  --pr-title "chore: Modulesync" \
+  --message "chore: Modulesync update" \
+  --git-base="https://github.com/"
 ```
 
 ## Run ModuleSync for another Organization
@@ -57,11 +66,11 @@ export GITHUB_BASE_URL="https://api.github.com"
 bundle exec msync update \
   --pr \
   --pr-labels modulesync \
-  --pr-title Modulesync \
-  --git-base=https://github.com/ \
+  --pr-title "chore: Modulesync" \
+  --message "chore: Modulesync update" \
+  --git-base="https://github.com/" \
   --namespace openvoxproject \
-  --managed-modules-conf managed_modules_openvox.yml \
-  --noop
+  --managed-modules-conf managed_modules_openvox.yml
 ```
 
 ## Defining Module Files
