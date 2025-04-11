@@ -44,7 +44,7 @@ bundle exec msync update \
   -f container-test \
   --pr \
   --pr-labels modulesync \
-  --pr-title "chore: Modulesync" \
+  --pr-title "chore: Modulesync ($(git describe --always))" \
   --message "chore: Modulesync update" \
   --git-base="https://github.com/"
 
@@ -52,7 +52,7 @@ bundle exec msync update \
 bundle exec msync update \
   --pr \
   --pr-labels modulesync \
-  --pr-title "chore: Modulesync" \
+  --pr-title "chore: Modulesync ($(git describe --always))" \
   --message "chore: Modulesync update" \
   --git-base="https://github.com/"
 ```
@@ -66,7 +66,7 @@ export GITHUB_BASE_URL="https://api.github.com"
 bundle exec msync update \
   --pr \
   --pr-labels modulesync \
-  --pr-title "chore: Modulesync" \
+  --pr-title "chore: Modulesync ($(git describe --always))" \
   --message "chore: Modulesync update" \
   --git-base="https://github.com/" \
   --namespace openvoxproject \
