@@ -3,6 +3,9 @@ name: 🤖 Update
 on:
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+
 jobs:
   update-all-voxpupuli-modules:
     runs-on: ubuntu-latest
