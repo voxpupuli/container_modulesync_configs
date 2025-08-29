@@ -2,7 +2,7 @@
 
 source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
-gem 'modulesync', '~> 3.5'
+gem 'modulesync', '~> 4.0'
 gem 'rake', '~> 13.0'
 gem 'github_changelog_generator', '~> 1.16'
 ### dependencies
