@@ -2,6 +2,7 @@
 - container-commitlint
 - container-r10k
 - container-r10k-webhook
+- container-renovate
 - container-semantic-release
 - container-test
 - container-voxbox
