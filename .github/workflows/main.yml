@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Run msync --noop against all modules
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
