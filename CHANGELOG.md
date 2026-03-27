@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.0](https://github.com/voxpupuli/container_modulesync_configs/tree/v1.2.0) (2026-03-27)
+
+[Full Changelog](https://github.com/voxpupuli/container_modulesync_configs/compare/v1.1.0...v1.2.0)
+
+**Implemented enhancements:**
+
+- chore: update templates [\#37](https://github.com/voxpupuli/container_modulesync_configs/pull/37) ([rwaffen](https://github.com/rwaffen))
+
+**Fixed bugs:**
+
+- fix: use the right codeowners [\#36](https://github.com/voxpupuli/container_modulesync_configs/pull/36) ([rwaffen](https://github.com/rwaffen))
+
 ## [v1.1.0](https://github.com/voxpupuli/container_modulesync_configs/tree/v1.1.0) (2026-03-19)
 
 [Full Changelog](https://github.com/voxpupuli/container_modulesync_configs/compare/v1.0.0...v1.1.0)
