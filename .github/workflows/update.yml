@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "🦊 Vox Pupuli: msync all"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
