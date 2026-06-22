@@ -1,3 +1,45 @@
 ---
+:global:
+  main_branches:
+    - main
+  matrix_command:
+  matrix_requires_yq: false
+  build_runner: ubuntu-latest
+  build_context: .
+  build_file: Containerfile
+  image_tag: 'ci/test:${{ github.sha }}'
+  build_platforms:
+  build_args: []
 .markdownlint.json:
   delete: true
+.github/workflows/ci.yaml:
+  delete: true
+.github/workflows/ci.yml:
+  general_ci_scan_dir:
+  build_job_name: Build ci container
+  test_repository:
+  test_commands: []
+  post_test_commands: []
+  dependabot_automerge: true
+.github/workflows/security_scanning.yml:
+  scan_job_name: Scan ci container
+  fail_build: false
+  severity_cutoff:
+  sarif_category:
+.github/workflows/build_container.yml:
+  publish_tag_patterns:
+    - '*'
+  publish_schedules: []
+  publish_runner:
+  publish_build_job_name: Build and publish container
+  publish_build_arch: 'linux/amd64,linux/arm64'
+  publish_tags: []
+  publish_pre_build_steps: []
+  publish_setup_outputs: {}
+  publish_setup_steps: []
+  publish_manifest_matrix_command:
+  publish_manifest_steps: []
+  publish_attestation_subject:
+  publish_info_container:
+  publish_info_commands: []
+  dockerhub_repository:
