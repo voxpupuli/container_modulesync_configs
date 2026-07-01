@@ -1,0 +1,222 @@
+---
+# Managed by modulesync - DO NOT EDIT
+# https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
+
+name: 📦 Build and Publish
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches:
+<%- @configs['main_branches'].each do |branch| -%>
+      - <%= branch %>
+<%- end -%>
+    tags:
+<%- @configs['publish_tag_patterns'].each do |tag_pattern| -%>
+      - '<%= tag_pattern %>'
+<%- end -%>
+<%- unless @configs['publish_schedules'].empty? -%>
+  schedule:
+<%- @configs['publish_schedules'].each do |schedule| -%>
+    - cron: '<%= schedule %>'
+<%- end -%>
+<%- end -%>
+  workflow_dispatch:
+
+concurrency:
+  group: build-and-publish-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+<%- if @configs['matrix_command'] -%>
+  setup-matrix:
+    name: Set up build matrix
+    runs-on: ubuntu-latest
+    outputs:
+      build-matrix: ${{ steps.build-matrix.outputs.build-matrix }}
+<%- if @configs['publish_manifest_matrix_command'] -%>
+      manifest-matrix: ${{ steps.manifest-matrix.outputs.manifest-matrix }}
+<%- end -%>
+<%- @configs['publish_setup_outputs'].each do |name, expression| -%>
+      <%= name %>: <%= expression %>
+<%- end -%>
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+<%- if @configs['matrix_requires_yq'] -%>
+
+      - name: Install yq
+        uses: dcarbone/install-yq-action@v1.3.1
+<%- end -%>
+
+      - name: Generate build matrix
+        id: build-matrix
+        run: |
+          matrix_json=$(<%= @configs['matrix_command'] %>)
+          echo "build-matrix=$matrix_json" >> "$GITHUB_OUTPUT"
+<%- if @configs['publish_manifest_matrix_command'] -%>
+
+      - name: Generate manifest matrix
+        id: manifest-matrix
+        run: |
+          matrix_json=$(<%= @configs['publish_manifest_matrix_command'] %>)
+          echo "manifest-matrix=$matrix_json" >> "$GITHUB_OUTPUT"
+<%- end -%>
+<%- @configs['publish_setup_steps'].each do |step| -%>
+
+      - name: <%= step['name'] %>
+        id: <%= step['id'] %>
+        run: |
+<%- step['commands'].each do |command| -%>
+          <%= command %>
+<%- end -%>
+<%- end -%>
+
+<%- end -%>
+  build-and-push-container:
+    name: <%= @configs['publish_build_job_name'] %>
+    runs-on: <%= @configs['publish_runner'] || @configs['build_runner'] %>
+<%- if @configs['matrix_command'] -%>
+    needs:
+      - setup-matrix
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.setup-matrix.outputs.build-matrix) }}
+<%- end -%>
+    permissions:
+<%- if @configs['publish_attestation_subject'] -%>
+      artifact-metadata: write
+      attestations: write
+<%- end -%>
+      contents: read
+<%- if @configs['publish_attestation_subject'] -%>
+      id-token: write
+<%- end -%>
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+<%- @configs['publish_pre_build_steps'].each do |step| -%>
+
+      - name: <%= step['name'] %>
+        id: <%= step['id'] %>
+        run: |
+<%- step['commands'].each do |command| -%>
+          <%= command %>
+<%- end -%>
+<%- end -%>
+
+      - name: Build and publish container
+        id: build
+        uses: voxpupuli/gha-build-and-publish-a-container@v2
+        with:
+          registry_password: ${{ secrets.GITHUB_TOKEN }}
+<%- unless @configs['build_args'].empty? -%>
+          build_args: |
+<%- @configs['build_args'].each do |argument| -%>
+            <%= argument %>
+<%- end -%>
+<%- end -%>
+          build_arch: <%= @configs['publish_build_arch'] %>
+          build_context: <%= @configs['build_context'] %>
+          buildfile: <%= @configs['build_file'] %>
+          tags: |
+<%- @configs['publish_tags'].each do |tag| -%>
+            <%= tag %>
+<%- end -%>
+<%- if @configs['publish_attestation_subject'] -%>
+
+      - name: Attest image
+        uses: actions/attest@v4
+        with:
+          subject-name: <%= @configs['publish_attestation_subject'] %>
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
+<%- end -%>
+<%- unless @configs['publish_manifest_steps'].empty? -%>
+
+  create-multiarch-manifests:
+    name: Create multi-architecture manifests
+    runs-on: ubuntu-latest
+    needs:
+<%- if @configs['matrix_command'] -%>
+      - setup-matrix
+<%- end -%>
+      - build-and-push-container
+<%- if @configs['publish_manifest_matrix_command'] -%>
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.setup-matrix.outputs.manifest-matrix) }}
+<%- end -%>
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          registry: docker.io
+          username: voxpupulibot
+          password: ${{ secrets.DOCKERHUB_BOT_ADMIN_TOKEN }}
+<%- @configs['publish_manifest_steps'].each do |step| -%>
+
+      - name: <%= step['name'] %>
+<%- if step['if'] -%>
+        if: <%= step['if'] %>
+<%- end -%>
+        run: |
+<%- step['commands'].each do |command| -%>
+          <%= command %>
+<%- end -%>
+<%- end -%>
+<%- end -%>
+<%- if @configs['publish_info_container'] -%>
+
+  publish-info:
+    name: Publish diagnostics
+    runs-on: ubuntu-latest
+    needs:
+<%- if @configs['matrix_command'] -%>
+      - setup-matrix
+<%- end -%>
+      - build-and-push-container
+    container: <%= @configs['publish_info_container'] %>
+    steps:
+      - name: Show image information
+        run: |
+<%- @configs['publish_info_commands'].each do |command| -%>
+          <%= command %>
+<%- end -%>
+<%- end -%>
+<%- if @configs['dockerhub_repository'] -%>
+
+  update-dockerhub-description:
+    name: Update Docker Hub description
+    runs-on: ubuntu-latest
+    needs:
+<%- if @configs['publish_manifest_steps'].empty? -%>
+      - build-and-push-container
+<%- else -%>
+      - create-multiarch-manifests
+<%- end -%>
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Update Docker Hub description
+        uses: peter-evans/dockerhub-description@v5
+        with:
+          username: voxpupulibot
+          password: ${{ secrets.DOCKERHUB_BOT_ADMIN_TOKEN }}
+          repository: <%= @configs['dockerhub_repository'] %>
+<%- end -%>

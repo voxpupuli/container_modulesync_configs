@@ -1,0 +1,104 @@
+---
+# Managed by modulesync - DO NOT EDIT
+# https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
+
+name: 🕵️ Security Scanning
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches:
+<%- @configs['main_branches'].each do |branch| -%>
+      - <%= branch %>
+<%- end -%>
+  pull_request:
+    branches:
+<%- @configs['main_branches'].each do |branch| -%>
+      - <%= branch %>
+<%- end -%>
+  workflow_dispatch:
+
+concurrency:
+  group: security-scanning-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+<%- if @configs['matrix_command'] -%>
+  setup-matrix:
+    name: Set up build matrix
+    runs-on: ubuntu-latest
+    outputs:
+      build-matrix: ${{ steps.build-matrix.outputs.build-matrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+<%- if @configs['matrix_requires_yq'] -%>
+
+      - name: Install yq
+        uses: dcarbone/install-yq-action@v1.3.1
+<%- end -%>
+
+      - name: Generate build matrix
+        id: build-matrix
+        run: echo "build-matrix=$(<%= @configs['matrix_command'] %>)" >> "$GITHUB_OUTPUT"
+
+<%- end -%>
+  scan-container:
+    name: <%= @configs['scan_job_name'] %>
+    runs-on: <%= @configs['build_runner'] %>
+<%- if @configs['matrix_command'] -%>
+    needs:
+      - setup-matrix
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.setup-matrix.outputs.build-matrix) }}
+<%- end -%>
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Build image
+        uses: docker/build-push-action@v7
+        with:
+          context: <%= @configs['build_context'] %>
+          file: <%= @configs['build_file'] %>
+          tags: '<%= @configs['image_tag'] %>'
+          load: true
+          push: false
+<%- if @configs['build_platforms'] -%>
+          platforms: <%= @configs['build_platforms'] %>
+<%- end -%>
+<%- unless @configs['build_args'].empty? -%>
+          build-args: |
+<%- @configs['build_args'].each do |argument| -%>
+            <%= argument %>
+<%- end -%>
+<%- end -%>
+
+      - name: Scan image with Anchore Grype
+        id: scan
+        uses: anchore/scan-action@v7
+        with:
+          image: '<%= @configs['image_tag'] %>'
+          fail-build: <%= @configs['fail_build'] %>
+<%- if @configs['severity_cutoff'] -%>
+          severity-cutoff: <%= @configs['severity_cutoff'] %>
+<%- end -%>
+
+      - name: Inspect SARIF report
+        run: jq . "${{ steps.scan.outputs.sarif }}"
+
+      - name: Upload SARIF report
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
+<%- if @configs['sarif_category'] -%>
+          category: '<%= @configs['sarif_category'] %>'
+<%- end -%>
