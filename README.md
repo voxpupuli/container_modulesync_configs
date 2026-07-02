@@ -1,171 +1,200 @@
 # Container ModuleSync Configs
 
-This repository contains default configuration for
-[modulesync](http://github.com/puppetlabs/modulesync) for the container at Puppet community.
-Changes to this repository should be synced with modulesync across all of the container repos.
+This repository contains the shared
+[ModuleSync](https://github.com/voxpupuli/modulesync) configuration for
+Vox Pupuli container repositories. It manages common GitHub workflows, release
+automation, Renovate configuration, linting defaults, and release support files
+for the container projects listed in `managed_modules.yml`.
 
-A full description of ModuleSync can be found in
-[ModuleSync's README](https://github.com/puppetlabs/modulesync).
-This README describes how the templates are rendered in the Puppet Labs configuration.
+For the detailed template reference, see `TEMPLATES.md`. For release
+maintenance of this repository, see `RELEASE.md`. User-visible changes are
+tracked in `CHANGELOG.md`.
 
-## Configuring ModuleSync
+## Managed Repositories
 
-**`modulesync.yml`**
-
-A key-value store of arguments to pass to ModuleSync. Each key is the name of a
-flag argument to the msync command. For example, `namespace: myusername`
-represents passing `--namespace myusername` to msync. This file does not appear
-in this repository because it only serves to override default configuration. To
-override the default configuration, the file may look something like this:
+The default target organization is configured in `modulesync.yml`:
 
 ```yaml
 ---
-namespace: yourusername
-branch: yourbranch
+namespace: voxpupuli
+git_base: 'git@github.com:'
+branch: modulesync
+message: "Update from voxpupuli/container_modulesync_config"
 ```
 
-**`managed_modules.yml`**
+`managed_modules.yml` contains the Vox Pupuli container repositories managed by
+default:
 
-A YAML array containing the names of the modules to manage.
+- `container-commitlint`
+- `container-onceover`
+- `container-r10k`
+- `container-r10k-webhook`
+- `container-renovate`
+- `container-semantic-release`
+- `container-test`
+- `container-voxbox`
 
-## Run ModuleSync
+`managed_modules_openvox.yml` contains the OpenVoxProject repositories that can
+be synced with an explicit namespace override:
 
-To run modulesync, you need to have the modulesync gem installed. You also need a PAT (Personal Access Token) from GitHub to authenticate with the GitHub API. You can create a PAT by following the instructions [here](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).
+- `container-openvoxserver`
+- `container-openvoxdb`
+- `container-openvoxagent`
+- `container-openbolt`
+
+## Repository Layout
+
+| Path | Purpose |
+| --- | --- |
+| `modulesync.yml` | Default ModuleSync options such as namespace, branch, Git base URL, and commit message |
+| `managed_modules.yml` | Default list of Vox Pupuli container repositories |
+| `managed_modules_openvox.yml` | Optional list for OpenVoxProject container repositories |
+| `config_defaults.yml` | Global and file-specific defaults consumed by templates |
+| `moduleroot/` | ERB templates rendered into target repositories |
+| `TEMPLATES.md` | Detailed reference for all templates and supported `.sync.yml` overrides |
+| `RELEASE.md` | Release process for this configuration repository |
+| `CHANGELOG.md` | Generated changelog for released versions |
+
+## What ModuleSync Manages
+
+The files in `moduleroot/` are rendered into each target repository with the
+`.erb` suffix removed. The current templates manage:
+
+- GitHub Actions workflows for container CI, image publishing, security
+  scanning, release creation, markdownlint, ShellCheck, and pull request
+  labeling.
+- GitHub repository metadata such as `CODEOWNERS`, release note categories,
+  Dependabot, and labeler configuration.
+- Repository-level defaults such as `.gitignore`, markdownlint configuration,
+  `Gemfile`, `Rakefile`, `RELEASE.md`, and `renovate.json`.
+
+Some historical files are removed through `config_defaults.yml` even though they
+do not have templates in `moduleroot/`, for example `.markdownlint.json` and
+`.github/workflows/ci.yaml`.
+
+## Configuration
+
+`config_defaults.yml` provides defaults for templates. Global values live under
+`:global:` and apply to multiple workflows, for example:
+
+- `main_branches`
+- `matrix_command`
+- `matrix_requires_yq`
+- `build_runner`
+- `build_context`
+- `build_file`
+- `image_tag`
+- `build_platforms`
+- `build_args`
+
+File-specific values use the target path as the key, for example
+`.github/workflows/ci.yml:` or `.github/workflows/build_container.yml:`.
+
+Target repositories can override defaults with a `.sync.yml` file that uses the
+same keys as `config_defaults.yml`. A typical override looks like this:
+
+```yaml
+---
+:global:
+  main_branches:
+    - main
+  build_args:
+    - "OPENVOX_VERSION=${{ matrix.openvox_version }}"
+
+.github/workflows/ci.yml:
+  general_ci_scan_dir: "."
+  test_commands:
+    - "docker run --rm ci/test:${{ github.sha }} --version"
+
+.github/workflows/security_scanning.yml:
+  fail_build: true
+  severity_cutoff: high
+```
+
+See `TEMPLATES.md` for the complete list of templates, variables, defaults, and
+example overrides.
+
+## Running ModuleSync
+
+Install the Ruby dependencies first:
 
 ```shell
-bundle config set --local path 'vendor/bundle'
+bundle config set --local path vendor/bundle
 bundle install
+```
 
-export GITHUB_TOKEN=your_github_pat
+ModuleSync needs a GitHub token with permission to push branches and open pull
+requests in the target repositories:
+
+```shell
+export GITHUB_TOKEN="your_github_pat"
 export GITHUB_BASE_URL="https://api.github.com"
+```
 
-# for one module
+Run ModuleSync for one repository:
+
+```shell
 bundle exec msync update \
   -f container-test \
   --pr \
   --pr-labels modulesync \
   --pr-title "chore: Modulesync ($(git describe --always))" \
-  --message "chore: Modulesync update" \
-  --git-base="https://github.com/"
-
-# for all modules
-bundle exec msync update \
-  --pr \
-  --pr-labels modulesync \
-  --pr-title "chore: Modulesync ($(git describe --always))" \
-  --message "chore: Modulesync update" \
-  --git-base="https://github.com/"
+  --message "chore: Modulesync update"
 ```
 
-## Run ModuleSync for another Organization
+Run ModuleSync for all repositories in `managed_modules.yml`:
 
 ```shell
-export GITHUB_TOKEN=your_github_pat
-export GITHUB_BASE_URL="https://api.github.com"
-
 bundle exec msync update \
   --pr \
   --pr-labels modulesync \
   --pr-title "chore: Modulesync ($(git describe --always))" \
-  --message "chore: Modulesync update" \
-  --git-base="https://github.com/" \
-  --namespace openvoxproject \
-  --managed-modules-conf managed_modules_openvox.yml
+  --message "chore: Modulesync update"
 ```
 
-## Defining Module Files
+Run ModuleSync for the OpenVoxProject repository list:
 
-**`config_defaults.yml`**
-
-Each first-level key in this file is the name of a file in a module to manage.
-These files only appear here if there are templates in the moduleroot/
-directory that need to be rendered with some default values that might be
-overridden. The files listed do not necessarily represent all the files that
-will be managed. The files in moduleroot/ represent all the files that will be
-managed, except for unmanaged and deleted files (see [#Special Options]).
-
-**`.sync.yml`**
-
-This file should appear in the module itself if there are any values to
-override from the config_defaults.yml file or if there are any additional
-values to assign. A description of what optional values can be defined in
-.sync.yml follows in the description of each file in moduleroot/. .sync.yml
-will have the same format as config_defaults.yml.
-
-### Note
-
-Each template is rendered in slightly different ways. Your templates do not
-need to be identical to these, as long as your config_defaults.yml or .sync.yml
-files contain as first-level keys the exact names of the files you are
-managing and appropriately handle the data structures you use in your templates
-(arrays versus hashes versus single values).
-
-**`moduleroot/Gemfile`**
-
-The Gemfile contains a list of gems, optionally with versions, to install in
-the development and test groups. config_defaults.yml contains a list of
-"required" gems to install, in the form of an array where each element contains
-the names and versions of the gems. This section of config_defaults.yml might
-look like
-
-```yaml
-Gemfile:
-  required:
-  - gem: rake
-    version: '~>1.2'
-  - gem: rspec-puppet
-#...
+```shell
+bundle exec msync update \
+  --namespace OpenVoxProject \
+  --managed-modules-conf managed_modules_openvox.yml \
+  --pr \
+  --pr-labels modulesync \
+  --pr-title "chore: Modulesync ($(git describe --always))" \
+  --message "chore: Modulesync update"
 ```
 
-The template also looks in .sync.yml for a group of optional gems to install,
-and merges this list with the list found in config_defaults.yml. This section
-of .sync.yml will look the same as the section of config_defaults.yml, but the
-name will be "optional" rather than "required".
+`modulesync.yml` already defines the default namespace, branch, Git base URL,
+and commit message. Command-line options override those defaults when needed.
 
-**`moduleroot/Rakefile`**
+## Special ModuleSync Options
 
-The Rakefile gets most of its tasks from the puppetlabs_spec_helper. The
-variables in the template represent lint checks to disable. config_defaults.yml
-contains an array of checks to pass in to PuppetLint.configuration.send. The
-key for this array is called default_disabled_lint_checks. .sync.yml may
-contain an additional array of checks to disable, with the key
-extra_disabled_lint_checks.
-
-**`moduleroot/.gitignore`**
-
-Contains some standard files to ignore. You can pass in additional files as an
-array with the key "paths" in your .gitignore section in .sync.yml.
-
-You can add additional environments for a specific module to test by adding an
-extras: section with the same format to the module's .sync.yml.
-
-## Special Options
-
-### Unmanaged Files
-
-A file can be marked "unmanaged" in .sync.yml, in which case modulesync will
-not try to modify it. This is useful if, for example, the module has special
-Rake tasks in the Rakefile which is difficult to manage through a template.
-
-To mark a file "unmanaged", list it in .sync.yml with the value `unmanaged:
-true`. For example,
+A target repository can opt out of a managed file by marking it as unmanaged in
+`.sync.yml`:
 
 ```yaml
 ---
-spec/spec_helper.rb:
+.github/workflows/ci.yml:
   unmanaged: true
 ```
 
-### Deleted Files
-
-Managing files may mean removing files. You can ensure a file is absent by
-marking it "delete". This is useful for purging nodesets.
-
-To mark a file deleted, list it in .sync.yml with the value `delete: true`. For
-example,
+ModuleSync can also remove a file from target repositories:
 
 ```yaml
 ---
-spec/acceptance/nodesets/sles-11sp1-x64.yml
+.github/workflows/old-workflow.yml:
   delete: true
 ```
+
+Use unmanaged files sparingly. Shared behavior should usually be represented in
+the templates or in supported `.sync.yml` variables so all container
+repositories stay aligned.
+
+## Releasing This Repository
+
+Releases are prepared on a branch named `release-vX.Y.Z`. The branch name is
+used by the changelog task to determine the future release version. After the
+release pull request is merged, maintainers tag `main` with `vX.Y.Z` and push
+the tag.
+
+The exact commands are documented in `RELEASE.md`.
