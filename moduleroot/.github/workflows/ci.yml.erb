@@ -129,9 +129,9 @@ jobs:
           jobs: ${{ toJSON(needs) }}
 <%- if @configs['dependabot_automerge'] -%>
 
-  dependabot:
-    name: Dependabot auto-merge
-    if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
+  automerge:
+    name: Enable auto-merge
+    if: github.event_name == 'pull_request' && (github.event.pull_request.user.login == 'dependabot[bot]' || github.event.pull_request.user.login == 'renovate[bot]')
     needs:
       - tests
     runs-on: ubuntu-latest
@@ -139,9 +139,10 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - name: Enable auto-merge for Dependabot PR
+      - name: Enable auto-merge for PR
         env:
           GH_TOKEN: ${{ github.token }}
           PR_URL: ${{ github.event.pull_request.html_url }}
-        run: gh pr merge --auto --merge "$PR_URL"
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: gh pr merge --auto --merge --match-head-commit "$PR_HEAD_SHA" "$PR_URL"
 <%- end -%>

@@ -10,17 +10,24 @@
   image_tag: 'ci/test:${{ github.sha }}'
   build_platforms:
   build_args: []
+
+# Delete the following files if they exist in the repository
 .markdownlint.json:
   delete: true
 .github/workflows/ci.yaml:
   delete: true
+.github/dependabot.yml:
+  delete: true
+renovate.json:
+  delete: true
+
 .github/workflows/ci.yml:
   general_ci_scan_dir:
   build_job_name: Build ci container
   test_repository:
   test_commands: []
   post_test_commands: []
-  dependabot_automerge: true
+  automerge: true
 .github/workflows/security_scanning.yml:
   scan_job_name: Scan ci container
   fail_build: false
