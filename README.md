@@ -66,7 +66,7 @@ The files in `moduleroot/` are rendered into each target repository with the
 - GitHub repository metadata such as `CODEOWNERS`, release note categories,
   Dependabot, and labeler configuration.
 - Repository-level defaults such as `.gitignore`, markdownlint configuration,
-  `Gemfile`, `Rakefile`, `RELEASE.md`, and `renovate.json`.
+  `Gemfile`, `Rakefile`, `RELEASE.md`, and `renovate.jsonc`.
 
 Some historical files are removed through `config_defaults.yml` even though they
 do not have templates in `moduleroot/`, for example `.markdownlint.json` and

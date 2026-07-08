@@ -54,9 +54,9 @@ Example:
 | Template | Target path | Purpose | Dynamic |
 | --- | --- | --- | --- |
 | `moduleroot/.github/CODEOWNERS.erb` | `.github/CODEOWNERS` | Requests reviews from the container maintainers | yes |
-| `moduleroot/.github/dependabot.yml.erb` | `.github/dependabot.yml` | Dependabot for Bundler and Docker | no |
 | `moduleroot/.github/labeler.yml.erb` | `.github/labeler.yml` | Labeler rule for release branches | no |
 | `moduleroot/.github/release.yml.erb` | `.github/release.yml` | GitHub release note categories | no |
+| `moduleroot/.github/renovate.jsonc.erb` | `.github/renovate.jsonc` | Renovate configuration for container repositories | no |
 | `moduleroot/.github/workflows/build_container.yml.erb` | `.github/workflows/build_container.yml` | Builds and publishes containers | yes |
 | `moduleroot/.github/workflows/ci.yml.erb` | `.github/workflows/ci.yml` | Pull request CI for container builds and tests | yes |
 | `moduleroot/.github/workflows/labeler.yml.erb` | `.github/workflows/labeler.yml` | Pull request labeler workflow | no |
@@ -70,7 +70,6 @@ Example:
 | `moduleroot/Gemfile.erb` | `Gemfile` | Release gems for changelog generation | no |
 | `moduleroot/RELEASE.md.erb` | `RELEASE.md` | Release process for maintainers | no |
 | `moduleroot/Rakefile.erb` | `Rakefile` | Rake task for changelog generation | yes |
-| `moduleroot/renovate.json.erb` | `renovate.json` | Renovate configuration for container repositories | no |
 
 ## Dynamic Templates
 
@@ -92,7 +91,7 @@ Example output for `namespace: voxpupuli`:
 
 Creates the pull request CI workflow. The workflow builds the container image,
 optionally with a matrix, runs optional test commands, and can automatically
-merge Dependabot pull requests after successful CI.
+merge Dependabot and Renovate pull requests after successful CI.
 
 | Variable | Default | Description |
 | --- | --- | --- |
@@ -110,7 +109,7 @@ merge Dependabot pull requests after successful CI.
 | `test_repository` | empty | Optional repository checked out before tests |
 | `test_commands` | `[]` | Shell commands for the `Test image` step |
 | `post_test_commands` | `[]` | Shell commands for diagnostics after tests |
-| `dependabot_automerge` | `true` | Enables auto-merge for Dependabot pull requests |
+| `automerge` | `true` | Enables auto-merge for Dependabot and Renovate pull requests |
 
 Example:
 
@@ -233,11 +232,6 @@ The task sets `future_release` from the current branch name. This turns
 
 ## Static Templates
 
-### `.github/dependabot.yml`
-
-Enables daily Dependabot updates for Bundler and Docker in the repository
-root. Each ecosystem allows up to ten open pull requests.
-
 ### `.github/labeler.yml` and `.github/workflows/labeler.yml`
 
 The labeler configuration marks pull requests from `release-*` branches with
@@ -286,12 +280,12 @@ Documents the release process: create the `release-vX.Y.Z` release branch,
 generate the changelog, merge the pull request, then tag on `main` and push the
 tags.
 
-### `renovate.json`
+### `.github/renovate.jsonc`
 
 Enables Renovate with `config:recommended`, immediate pull requests, auto-merge
 by pull request, and security labels for vulnerability alerts. Additional regex
 managers read versions from `build_versions.yaml`, `build_platforms.yaml`, and
-`Containerfile` for Rubygems and Debian dependencies.
+`Containerfile` for Rubygems dependencies.
 
 ## Delete Defaults
 
