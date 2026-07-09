@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.3.0](https://github.com/voxpupuli/container_modulesync_configs/tree/v1.3.0) (2026-07-09)
+
+[Full Changelog](https://github.com/voxpupuli/container_modulesync_configs/compare/v1.2.0...v1.3.0)
+
+**Implemented enhancements:**
+
+- feat: add renovate labels and automerge [\#47](https://github.com/voxpupuli/container_modulesync_configs/pull/47) ([rwaffen](https://github.com/rwaffen))
+- feat: add gha templates to renovate [\#45](https://github.com/voxpupuli/container_modulesync_configs/pull/45) ([rwaffen](https://github.com/rwaffen))
+- refactor: update configuration files for Renovate integration and remove  Dependabot settings [\#44](https://github.com/voxpupuli/container_modulesync_configs/pull/44) ([rwaffen](https://github.com/rwaffen))
+- feat: add templates for container builds [\#41](https://github.com/voxpupuli/container_modulesync_configs/pull/41) ([rwaffen](https://github.com/rwaffen))
+- fix: improve CI, dependency automation and repository maintenance [\#40](https://github.com/voxpupuli/container_modulesync_configs/pull/40) ([rwaffen](https://github.com/rwaffen))
+
+**Merged pull requests:**
+
+- chore\(deps\): update davidanson/markdownlint-cli2-action action to v24 [\#46](https://github.com/voxpupuli/container_modulesync_configs/pull/46) ([renovate[bot]](https://github.com/apps/renovate))
+- docs: update and clarify README.md [\#43](https://github.com/voxpupuli/container_modulesync_configs/pull/43) ([rwaffen](https://github.com/rwaffen))
+- docs: add comprehensive templates documentation [\#42](https://github.com/voxpupuli/container_modulesync_configs/pull/42) ([rwaffen](https://github.com/rwaffen))
+- chore\(deps\): update actions/checkout action to v7 [\#39](https://github.com/voxpupuli/container_modulesync_configs/pull/39) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [v1.2.0](https://github.com/voxpupuli/container_modulesync_configs/tree/v1.2.0) (2026-03-27)
 
 [Full Changelog](https://github.com/voxpupuli/container_modulesync_configs/compare/v1.1.0...v1.2.0)
