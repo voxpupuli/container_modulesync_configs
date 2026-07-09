@@ -129,11 +129,12 @@ jobs:
 <%- end -%>
 <%- if @configs['publish_attestation_subject'] -%>
 
+      # needs https://github.com/voxpupuli/gha-build-and-publish-a-container/pull/38
       - name: Attest image
         uses: actions/attest@v4
         with:
           subject-name: <%= @configs['publish_attestation_subject'] %>
-          subject-digest: ${{ steps.build.outputs.digest }}
+          subject-digest: ${{ steps.build_and_publish.outputs.digest }}
           push-to-registry: true
 <%- end -%>
 <%- unless @configs['publish_manifest_steps'].empty? -%>
