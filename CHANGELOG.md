@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.4.0](https://github.com/voxpupuli/container_modulesync_configs/tree/v1.4.0) (2026-07-10)
+
+[Full Changelog](https://github.com/voxpupuli/container_modulesync_configs/compare/v1.3.0...v1.4.0)
+
+**Implemented enhancements:**
+
+- feat: pin all the workflows [\#53](https://github.com/voxpupuli/container_modulesync_configs/pull/53) ([rwaffen](https://github.com/rwaffen))
+- feat: move and fix renovate config [\#51](https://github.com/voxpupuli/container_modulesync_configs/pull/51) ([rwaffen](https://github.com/rwaffen))
+
+**Merged pull requests:**
+
+- docs: update RELEASE docu to signoff commits and sign tags [\#50](https://github.com/voxpupuli/container_modulesync_configs/pull/50) ([rwaffen](https://github.com/rwaffen))
+
 ## [v1.3.0](https://github.com/voxpupuli/container_modulesync_configs/tree/v1.3.0) (2026-07-09)
 
 [Full Changelog](https://github.com/voxpupuli/container_modulesync_configs/compare/v1.2.0...v1.3.0)
