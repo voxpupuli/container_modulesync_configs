@@ -1,8 +1,8 @@
 name: noop run
 
 on:
-  workflow_dispatch:
-  pull_request:
+  workflow_dispatch: {}
+  pull_request: {}
   push:
     branches:
       - master
@@ -20,17 +20,25 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 # v1.316.0
         with:
-          ruby-version: 4.0
+          ruby-version: ruby
           bundler-cache: true
 
       - name: Run msync --noop
-        run: bundle exec msync update --noop --git-base=https://github.com/
+        run: bundle exec msync update --noop --git-base=https://github.com/ --branch foobranch
+
+  tests:
+    needs:
+      - unit
+    runs-on: ubuntu-latest
+    name: Test suite
+    steps:
+      - run: echo Test suite completed
 
   automerge:
     name: Enable auto-merge
     if: github.event_name == 'pull_request' && (github.event.pull_request.user.login == 'dependabot[bot]' || github.event.pull_request.user.login == 'renovate[bot]')
     needs:
-      - unit
+      - tests
     runs-on: ubuntu-latest
     permissions:
       contents: write
