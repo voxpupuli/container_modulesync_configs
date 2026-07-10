@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.4.1](https://github.com/voxpupuli/container_modulesync_configs/tree/v1.4.1) (2026-07-10)
+
+[Full Changelog](https://github.com/voxpupuli/container_modulesync_configs/compare/v1.4.0...v1.4.1)
+
+**Fixed bugs:**
+
+- fix: rename parameter to match data [\#55](https://github.com/voxpupuli/container_modulesync_configs/pull/55) ([rwaffen](https://github.com/rwaffen))
+
 ## [v1.4.0](https://github.com/voxpupuli/container_modulesync_configs/tree/v1.4.0) (2026-07-10)
 
 [Full Changelog](https://github.com/voxpupuli/container_modulesync_configs/compare/v1.3.0...v1.4.0)
