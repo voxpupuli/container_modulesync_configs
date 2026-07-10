@@ -1,34 +1,65 @@
-name: 🤖 Update
+---
+name: 🤖 Update all Containers
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 permissions:
   contents: read
 
-jobs:
-  update-all-voxpupuli-modules:
-    runs-on: ubuntu-latest
-    name: "🦊 Vox Pupuli: msync all"
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+env:
+  GIT_AUTHOR_NAME: pccibot
+  GIT_AUTHOR_EMAIL: 12855858+pccibot@users.noreply.github.com
+  GIT_COMMITTER_NAME: pccibot
+  GIT_COMMITTER_EMAIL: 12855858+pccibot@users.noreply.github.com
+  SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+  GITHUB_BASE_URL: https://api.github.com
 
+jobs:
+  msync:
+    runs-on: ubuntu-latest
+    name: Run msync against all containers
+    if: ${{ github.repository_owner == 'voxpupuli' }}
+    steps:
+      - name: checkout code
+        # the action has a ssh-key option.
+        # when provided, it configures the ssh/git config to authenticate automatically with that key to the source repo
+        # the authentication won't be used for other repos (which we need for msync), so we cannot use the option
+        # that's the reason for the 'Add SSH key' step
+        #
+        # the "ref: github.ref" is required for the tag to be properly checked out, as a workaround
+        # for https://github.com/actions/checkout/issues/1638
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          ref: ${{ github.ref }}
       - name: Setup ruby
         uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 # v1.316.0
         with:
-          ruby-version: 4.0
+          ruby-version: ruby
           bundler-cache: true
-
+      - name: Add SSH key
+        run: |
+            mkdir -p ~/.ssh
+            echo "${{ secrets.PCCI_SSH_PRIVATE_KEY }}" > ~/.ssh/github_actions
+            chmod 600 ~/.ssh/github_actions
+            ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+            ssh-add ~/.ssh/github_actions
+      - name: set git user & email & commit signing
+        run: |
+          git config --global user.email "$GIT_AUTHOR_EMAIL"
+          git config --global user.name "$GIT_AUTHOR_NAME"
+          git config --global gpg.format ssh
+          git config --global user.signingkey ~/.ssh/github_actions
+          git config --global commit.gpgsign true
       - name: Run msync
         env:
-          GIT_AUTHOR_NAME: 'VoxBox'
-          GIT_AUTHOR_EMAIL: "${{ github.repository_owner }}@users.noreply.github.com"
+          # https://github.com/voxpupuli/modulesync?tab=readme-ov-file#submitting-prsmrs-to-github-or-gitlab
+          GITHUB_TOKEN: '${{ secrets.PCCI_PAT_MODULESYNC_PR }}'
         run: |
-          git config --global user.name "VoxBot"
-          git config --global user.email "voxbot@voxpupuli.org"
-          export GITHUB_TOKEN=${{ secrets.VOXPUPULI_PAT }}
-          bundle exec msync update \
+          bundle exec msync update --verbose \
             --pr \
             --pr-labels modulesync \
-            --pr-title Modulesync \
-            --git-base="https://github.com/"
+            --pr-title "chore: Modulesync ($(git describe --always))" \
+            --message "chore: Modulesync $(git describe --always)"
