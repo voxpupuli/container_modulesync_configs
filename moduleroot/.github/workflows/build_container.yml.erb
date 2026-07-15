@@ -114,6 +114,10 @@ jobs:
         uses: voxpupuli/gha-build-and-publish-a-container@f1680271a3fd34267c1401c760a15f45a9cf34ca # v2.0.0
         with:
           registry_password: ${{ secrets.GITHUB_TOKEN }}
+<%- if @configs['publish_tags'].any? { |tag| tag.start_with?('docker.io/') } -%>
+          docker_username: voxpupulibot
+          docker_password: ${{ secrets.DOCKERHUB_BOT_ADMIN_TOKEN }}
+<%- end -%>
 <%- unless @configs['build_args'].empty? -%>
           build_args: |
 <%- @configs['build_args'].each do |argument| -%>
