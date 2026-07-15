@@ -27,7 +27,6 @@ renovate.json:
   test_repository:
   test_commands: []
   post_test_commands: []
-  automerge: true
 .github/workflows/security_scanning.yml:
   scan_job_name: Scan ci container
   fail_build: false
