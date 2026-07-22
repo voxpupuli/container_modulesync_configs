@@ -1,11 +1,12 @@
-name: noop run
+name: 🚦 CI
 
 on:
-  workflow_dispatch: {}
+  merge_group: {}
   pull_request: {}
   push:
     branches:
-      - master
+      - main
+  workflow_dispatch: {}
 
 permissions:
   contents: read
