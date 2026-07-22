@@ -109,7 +109,6 @@ merge Dependabot and Renovate pull requests after successful CI.
 | `test_repository` | empty | Optional repository checked out before tests |
 | `test_commands` | `[]` | Shell commands for the `Test image` step |
 | `post_test_commands` | `[]` | Shell commands for diagnostics after tests |
-| `automerge` | `true` | Enables auto-merge for Dependabot and Renovate pull requests |
 
 Example:
 
