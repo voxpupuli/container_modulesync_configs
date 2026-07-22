@@ -12,6 +12,11 @@ on:
       - <%= branch %>
 <%- end -%>
   workflow_dispatch:
+  merge_group:
+    branches:
+<%- @configs['main_branches'].each do |branch| -%>
+      - <%= branch %>
+<%- end -%>
 
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
