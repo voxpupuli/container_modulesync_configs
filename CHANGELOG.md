@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.5.0](https://github.com/voxpupuli/container_modulesync_configs/tree/v1.5.0) (2026-07-22)
+
+[Full Changelog](https://github.com/voxpupuli/container_modulesync_configs/compare/v1.4.1...v1.5.0)
+
+**Implemented enhancements:**
+
+- feat: remove dependabot, use only renovate [\#66](https://github.com/voxpupuli/container_modulesync_configs/pull/66) ([rwaffen](https://github.com/rwaffen))
+- feat: implement auto-merge as own workflow so it is not hidden in ci.yaml [\#63](https://github.com/voxpupuli/container_modulesync_configs/pull/63) ([rwaffen](https://github.com/rwaffen))
+
+**Fixed bugs:**
+
+- fix: add Docker Hub credentials for publishing tags [\#62](https://github.com/voxpupuli/container_modulesync_configs/pull/62) ([rwaffen](https://github.com/rwaffen))
+
+**Merged pull requests:**
+
+- chore\(deps\): update github/codeql-action action to v4.37.3 [\#72](https://github.com/voxpupuli/container_modulesync_configs/pull/72) ([renovate[bot]](https://github.com/apps/renovate))
+- chore\(deps\): update actions/labeler action to v7 [\#71](https://github.com/voxpupuli/container_modulesync_configs/pull/71) ([renovate[bot]](https://github.com/apps/renovate))
+- chore\(deps\): update actions/checkout action to v7.0.1 [\#70](https://github.com/voxpupuli/container_modulesync_configs/pull/70) ([renovate[bot]](https://github.com/apps/renovate))
+- chore\(deps\): update davidanson/markdownlint-cli2-action action to v24.1.0 [\#69](https://github.com/voxpupuli/container_modulesync_configs/pull/69) ([renovate[bot]](https://github.com/apps/renovate))
+- chore\(deps\): update actions/attest action to v4.2.0 [\#68](https://github.com/voxpupuli/container_modulesync_configs/pull/68) ([renovate[bot]](https://github.com/apps/renovate))
+- chore\(deps\): update github/codeql-action action to v4.37.2 [\#67](https://github.com/voxpupuli/container_modulesync_configs/pull/67) ([renovate[bot]](https://github.com/apps/renovate))
+- chore\(deps\): update ruby/setup-ruby action to v1.320.0 [\#61](https://github.com/voxpupuli/container_modulesync_configs/pull/61) ([renovate[bot]](https://github.com/apps/renovate))
+- chore\(deps\): update ruby/setup-ruby action to v1.317.0 [\#58](https://github.com/voxpupuli/container_modulesync_configs/pull/58) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [v1.4.1](https://github.com/voxpupuli/container_modulesync_configs/tree/v1.4.1) (2026-07-10)
 
 [Full Changelog](https://github.com/voxpupuli/container_modulesync_configs/compare/v1.4.0...v1.4.1)
