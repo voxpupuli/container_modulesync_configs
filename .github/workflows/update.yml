@@ -1,5 +1,5 @@
 ---
-name: 🤖 Update all Containers
+name: 🛠️ Update all Containers
 
 on:
   workflow_dispatch: {}
@@ -18,8 +18,15 @@ env:
 jobs:
   msync:
     runs-on: ubuntu-latest
-    name: Run msync against all containers
+    name: Run msync against ${{ matrix.organization }} containers
     if: ${{ github.repository_owner == 'voxpupuli' }}
+    strategy:
+      matrix:
+        include:
+          - organization: voxpupuli
+            managed_modules_conf: managed_modules.yml
+          - organization: OpenVoxProject
+            managed_modules_conf: managed_modules_openvox.yml
     steps:
       - name: checkout code
         # the action has a ssh-key option.
@@ -59,6 +66,8 @@ jobs:
           GITHUB_TOKEN: '${{ secrets.PCCI_PAT_MODULESYNC_PR }}'
         run: |
           bundle exec msync update --verbose \
+            --namespace "${{ matrix.organization }}" \
+            --managed-modules-conf "${{ matrix.managed_modules_conf }}" \
             --pr \
             --pr-labels modulesync \
             --pr-title "chore: Modulesync ($(git describe --always))" \
