@@ -55,11 +55,14 @@ jobs:
             ssh-add ~/.ssh/github_actions
       - name: set git user & email & commit signing
         run: |
-          git config --global user.email "$GIT_AUTHOR_EMAIL"
-          git config --global user.name "$GIT_AUTHOR_NAME"
-          git config --global gpg.format ssh
-          git config --global user.signingkey ~/.ssh/github_actions
-          git config --global commit.gpgsign true
+          git config set --global user.email "$GIT_AUTHOR_EMAIL"
+          git config set --global user.name "$GIT_AUTHOR_NAME"
+          git config set --global gpg.format ssh
+          git config set --global user.signingkey ~/.ssh/github_actions
+          git config set --global commit.gpgsign true
+          git config set --global tag.gpgsign true
+          git config set --global commit.signoff true
+
       - name: Run msync
         env:
           # https://github.com/voxpupuli/modulesync?tab=readme-ov-file#submitting-prsmrs-to-github-or-gitlab
