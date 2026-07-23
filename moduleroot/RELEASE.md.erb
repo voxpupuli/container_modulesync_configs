@@ -2,6 +2,10 @@
 <!-- https://voxpupuli.org/docs/updating-files-managed-with-modulesync/ -->
 # Release
 
+<%- if @configs['release_preamble'] -%>
+<%= @configs['release_preamble'].rstrip %>
+
+<%- end -%>
 ## On a fork
 
 Please follow these instructions carefully.

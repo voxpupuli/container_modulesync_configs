@@ -21,6 +21,8 @@
 renovate.json:
   delete: true
 
+RELEASE.md:
+  release_preamble:
 .github/workflows/ci.yml:
   general_ci_scan_dir:
   build_job_name: Build ci container
