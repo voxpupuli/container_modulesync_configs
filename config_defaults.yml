@@ -18,6 +18,8 @@
   delete: true
 .github/dependabot.yml:
   delete: true
+.github/scripts/update_vulnerability_issue.rb:
+  unmanaged: true
 renovate.json:
   delete: true
 
@@ -50,4 +52,5 @@ RELEASE.md:
   publish_attestation_subject:
   publish_info_container:
   publish_info_commands: []
+  publish_vulnerability_issue_image:
   dockerhub_repository:

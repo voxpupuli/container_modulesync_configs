@@ -57,6 +57,7 @@ Example:
 | `moduleroot/.github/labeler.yml.erb` | `.github/labeler.yml` | Labeler rule for release branches | no |
 | `moduleroot/.github/release.yml.erb` | `.github/release.yml` | GitHub release note categories | no |
 | `moduleroot/.github/renovate.jsonc.erb` | `.github/renovate.jsonc` | Renovate configuration for container repositories | no |
+| `moduleroot/.github/scripts/update_vulnerability_issue.rb.erb` | `.github/scripts/update_vulnerability_issue.rb` | Updates the latest-image vulnerability issue | no |
 | `moduleroot/.github/workflows/build_container.yml.erb` | `.github/workflows/build_container.yml` | Builds and publishes containers | yes |
 | `moduleroot/.github/workflows/ci.yml.erb` | `.github/workflows/ci.yml` | Pull request CI for container builds and tests | yes |
 | `moduleroot/.github/workflows/labeler.yml.erb` | `.github/workflows/labeler.yml` | Pull request labeler workflow | no |
@@ -127,7 +128,7 @@ Example:
 Creates the publish workflow for container images. The workflow reacts to
 pushes to `main_branches`, tags, optional schedules, and manual starts. It can
 create pre-build steps, matrix builds, attestations, multi-arch manifests,
-diagnostic jobs, and Docker Hub description updates.
+diagnostic jobs, vulnerability issues, and Docker Hub description updates.
 
 | Variable | Default | Description |
 | --- | --- | --- |
@@ -151,6 +152,7 @@ diagnostic jobs, and Docker Hub description updates.
 | `publish_manifest_steps` | `[]` | Enables the job that creates multi-arch manifests |
 | `publish_info_container` | empty | Enables a diagnostic job in this container |
 | `publish_info_commands` | `[]` | Commands for the diagnostic job |
+| `publish_vulnerability_issue_image` | empty | Image scanned by Grype and Trivy with previews in an issue and full reports as an artifact |
 | `dockerhub_repository` | empty | Enables updating the Docker Hub description |
 
 Structure for `publish_setup_steps`, `publish_pre_build_steps`, and
