@@ -68,7 +68,7 @@ Example:
 | `moduleroot/.markdownlint-cli2.yaml.erb` | `.markdownlint-cli2.yaml` | Ignore rules for markdownlint-cli2 | no |
 | `moduleroot/.markdownlint.yaml.erb` | `.markdownlint.yaml` | Markdownlint rules | no |
 | `moduleroot/Gemfile.erb` | `Gemfile` | Release gems for changelog generation | no |
-| `moduleroot/RELEASE.md.erb` | `RELEASE.md` | Release process for maintainers | no |
+| `moduleroot/RELEASE.md.erb` | `RELEASE.md` | Release process for maintainers | yes |
 | `moduleroot/Rakefile.erb` | `Rakefile` | Rake task for changelog generation | yes |
 
 ## Dynamic Templates
@@ -278,6 +278,10 @@ optional `release` group with `faraday-retry` and
 Documents the release process: create the `release-vX.Y.Z` release branch,
 generate the changelog, merge the pull request, then tag on `main` and push the
 tags.
+
+| Variable | Type | Description |
+| --- | --- | --- |
+| `release_preamble` | String | Optional repository-specific introduction |
 
 ### `.github/renovate.jsonc`
 
