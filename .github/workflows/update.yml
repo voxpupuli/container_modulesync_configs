@@ -65,16 +65,11 @@ jobs:
           git config set --global tag.gpgsign true
           git config set --global commit.signoff true
 
-      - name: Run msync
+      - name: Run msync for voxpupuli
+        if: matrix.organization == 'voxpupuli'
         env:
-          # https://github.com/voxpupuli/modulesync?tab=readme-ov-file#submitting-prsmrs-to-github-or-gitlab
-          GITHUB_TOKEN: ${{ secrets[matrix.token_secret] }}
-        run: |
-          if [ -z "$GITHUB_TOKEN" ]; then
-            echo "::error::GitHub token is not configured for ${{ matrix.organization }}"
-            exit 1
-          fi
-
+          GITHUB_TOKEN: ${{ secrets.PCCI_PAT_MODULESYNC_PR }}
+        run: &run_msync |
           bundle exec msync update --verbose \
             --namespace "${{ matrix.organization }}" \
             --managed-modules-conf "${{ matrix.managed_modules_conf }}" \
@@ -82,3 +77,9 @@ jobs:
             --pr-labels modulesync \
             --pr-title "chore: Modulesync ($(git describe --always))" \
             --message "chore: Modulesync $(git describe --always)"
+
+      - name: Run msync for OpenVoxProject
+        if: matrix.organization == 'OpenVoxProject'
+        env:
+          GITHUB_TOKEN: ${{ secrets.PCCI_PAT_MODULESYNC_OV_PR }}
+        run: *run_msync
