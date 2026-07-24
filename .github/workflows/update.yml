@@ -25,8 +25,10 @@ jobs:
         include:
           - organization: voxpupuli
             managed_modules_conf: managed_modules.yml
+            token_secret: PCCI_PAT_MODULESYNC_PR
           - organization: OpenVoxProject
             managed_modules_conf: managed_modules_openvox.yml
+            token_secret: PCCI_PAT_MODULESYNC_OV_PR
     steps:
       - name: checkout code
         # the action has a ssh-key option.
@@ -66,8 +68,13 @@ jobs:
       - name: Run msync
         env:
           # https://github.com/voxpupuli/modulesync?tab=readme-ov-file#submitting-prsmrs-to-github-or-gitlab
-          GITHUB_TOKEN: '${{ secrets.PCCI_PAT_MODULESYNC_PR }}'
+          GITHUB_TOKEN: ${{ secrets[matrix.token_secret] }}
         run: |
+          if [ -z "$GITHUB_TOKEN" ]; then
+            echo "::error::GitHub token is not configured for ${{ matrix.organization }}"
+            exit 1
+          fi
+
           bundle exec msync update --verbose \
             --namespace "${{ matrix.organization }}" \
             --managed-modules-conf "${{ matrix.managed_modules_conf }}" \
