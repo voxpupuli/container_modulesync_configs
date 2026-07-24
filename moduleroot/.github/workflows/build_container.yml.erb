@@ -239,7 +239,7 @@ jobs:
         with:
           image-ref: '<%= @configs['publish_vulnerability_issue_image'] %>'
           scanners: vuln
-          severity: HIGH,CRITICAL
+          severity: HIGH,CRITICAL,MEDIUM,LOW
           format: table
           output: trivy-report.txt
           exit-code: '0'
