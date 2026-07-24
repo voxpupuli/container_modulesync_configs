@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.6.0](https://github.com/voxpupuli/container_modulesync_configs/tree/v1.6.0) (2026-07-24)
+
+[Full Changelog](https://github.com/voxpupuli/container_modulesync_configs/compare/v1.5.0...v1.6.0)
+
+**Implemented enhancements:**
+
+- feat: add container vulnerability scanning and issue update workflow [\#81](https://github.com/voxpupuli/container_modulesync_configs/pull/81) ([rwaffen](https://github.com/rwaffen))
+- feat: add release preamble configuration to RELEASE.md and config\_defaults.yml [\#78](https://github.com/voxpupuli/container_modulesync_configs/pull/78) ([rwaffen](https://github.com/rwaffen))
+
+**Merged pull requests:**
+
+- chore\(deps\): update docker/login-action action to v4.5.0 [\#80](https://github.com/voxpupuli/container_modulesync_configs/pull/80) ([renovate[bot]](https://github.com/apps/renovate))
+- chore\(deps\): update ruby/setup-ruby action to v1.321.0 [\#77](https://github.com/voxpupuli/container_modulesync_configs/pull/77) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [v1.5.0](https://github.com/voxpupuli/container_modulesync_configs/tree/v1.5.0) (2026-07-22)
 
 [Full Changelog](https://github.com/voxpupuli/container_modulesync_configs/compare/v1.4.1...v1.5.0)
