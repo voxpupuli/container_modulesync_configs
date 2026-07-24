@@ -1,5 +1,5 @@
 ---
-name: 🤖 Update all Containers
+name: 🛠️ Update all Containers
 
 on:
   workflow_dispatch: {}
@@ -18,8 +18,17 @@ env:
 jobs:
   msync:
     runs-on: ubuntu-latest
-    name: Run msync against all containers
+    name: Run msync against ${{ matrix.organization }} containers
     if: ${{ github.repository_owner == 'voxpupuli' }}
+    strategy:
+      matrix:
+        include:
+          - organization: voxpupuli
+            managed_modules_conf: managed_modules.yml
+            token_secret: PCCI_PAT_MODULESYNC_PR
+          - organization: OpenVoxProject
+            managed_modules_conf: managed_modules_openvox.yml
+            token_secret: PCCI_PAT_MODULESYNC_OV_PR
     steps:
       - name: checkout code
         # the action has a ssh-key option.
@@ -48,18 +57,29 @@ jobs:
             ssh-add ~/.ssh/github_actions
       - name: set git user & email & commit signing
         run: |
-          git config --global user.email "$GIT_AUTHOR_EMAIL"
-          git config --global user.name "$GIT_AUTHOR_NAME"
-          git config --global gpg.format ssh
-          git config --global user.signingkey ~/.ssh/github_actions
-          git config --global commit.gpgsign true
-      - name: Run msync
+          git config set --global user.email "$GIT_AUTHOR_EMAIL"
+          git config set --global user.name "$GIT_AUTHOR_NAME"
+          git config set --global gpg.format ssh
+          git config set --global user.signingkey ~/.ssh/github_actions
+          git config set --global commit.gpgsign true
+          git config set --global tag.gpgsign true
+          git config set --global commit.signoff true
+
+      - name: Run msync for voxpupuli
+        if: matrix.organization == 'voxpupuli'
         env:
-          # https://github.com/voxpupuli/modulesync?tab=readme-ov-file#submitting-prsmrs-to-github-or-gitlab
-          GITHUB_TOKEN: '${{ secrets.PCCI_PAT_MODULESYNC_PR }}'
-        run: |
+          GITHUB_TOKEN: ${{ secrets.PCCI_PAT_MODULESYNC_PR }}
+        run: &run_msync |
           bundle exec msync update --verbose \
+            --namespace "${{ matrix.organization }}" \
+            --managed-modules-conf "${{ matrix.managed_modules_conf }}" \
             --pr \
             --pr-labels modulesync \
             --pr-title "chore: Modulesync ($(git describe --always))" \
             --message "chore: Modulesync $(git describe --always)"
+
+      - name: Run msync for OpenVoxProject
+        if: matrix.organization == 'OpenVoxProject'
+        env:
+          GITHUB_TOKEN: ${{ secrets.PCCI_PAT_MODULESYNC_OV_PR }}
+        run: *run_msync
