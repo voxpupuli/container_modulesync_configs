@@ -58,6 +58,13 @@
   },
   "packageRules": [
     {
+      // GitHub Actions are updated centrally in the ModuleSync configuration repository.
+      "enabled": false,
+      "matchManagers": [
+        "github-actions"
+      ]
+    },
+    {
       // Do not require dashboard approval before creating updates.
       "dependencyDashboardApproval": false,
       "matchPackageNames": [
