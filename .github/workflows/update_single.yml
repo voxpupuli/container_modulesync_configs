@@ -1,0 +1,87 @@
+---
+name: 🛠️ Update a specific Container
+
+on:
+  workflow_dispatch:
+    inputs:
+      container:
+        description: 'Container to update'
+        required: true
+        default: 'container-test'
+      organization:
+        description: 'Organization of the container'
+        required: true
+        type: choice
+        options:
+          - voxpupuli
+          - OpenVoxProject
+
+permissions:
+  contents: read
+
+env:
+  GIT_AUTHOR_NAME: pccibot
+  GIT_AUTHOR_EMAIL: 12855858+pccibot@users.noreply.github.com
+  GIT_COMMITTER_NAME: pccibot
+  GIT_COMMITTER_EMAIL: 12855858+pccibot@users.noreply.github.com
+  SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+  GITHUB_BASE_URL: https://api.github.com
+
+jobs:
+  msync:
+    runs-on: ubuntu-latest
+    name: Run msync against ${{ inputs.organization }}/${{ inputs.container }}
+    if: ${{ github.repository_owner == 'voxpupuli' }}
+    steps:
+      - name: checkout code
+        # the action has a ssh-key option.
+        # when provided, it configures the ssh/git config to authenticate automatically with that key to the source repo
+        # the authentication won't be used for other repos (which we need for msync), so we cannot use the option
+        # that's the reason for the 'Add SSH key' step
+        #
+        # the "ref: github.ref" is required for the tag to be properly checked out, as a workaround
+        # for https://github.com/actions/checkout/issues/1638
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          ref: ${{ github.ref }}
+
+      - name: Setup ruby
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+        with:
+          ruby-version: ruby
+          bundler-cache: true
+
+      - name: Add SSH key
+        run: |
+            mkdir -p ~/.ssh
+            echo "${{ secrets.PCCI_SSH_PRIVATE_KEY }}" > ~/.ssh/github_actions
+            chmod 600 ~/.ssh/github_actions
+            ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+            ssh-add ~/.ssh/github_actions
+
+      - name: set git user & email & commit signing
+        run: |
+          git config set --global user.email "$GIT_AUTHOR_EMAIL"
+          git config set --global user.name "$GIT_AUTHOR_NAME"
+          git config set --global gpg.format ssh
+          git config set --global user.signingkey ~/.ssh/github_actions
+          git config set --global commit.gpgsign true
+          git config set --global tag.gpgsign true
+
+      - name: Run msync for voxpupuli
+        env:
+          GITHUB_TOKEN: ${{ inputs.organization == 'voxpupuli' && secrets.PCCI_PAT_MODULESYNC_PR || secrets.PCCI_PAT_MODULESYNC_OV_PR }}
+          MANAGED_MODULES_CONF: ${{ inputs.organization == 'voxpupuli' && 'managed_modules.yml' || 'managed_modules_openvox.yml' }}
+        run: |
+          bundle exec msync update --verbose \
+            -f "${{ inputs.container }}" \
+            --namespace "${{ inputs.organization }}" \
+            --managed-modules-conf "${{ env.MANAGED_MODULES_CONF }}" \
+            --pr \
+            --pr-labels modulesync \
+            --pr-title "chore: Modulesync ($(git describe --always))" \
+            --rebase \
+            --signoff \
+            --message "chore: Modulesync $(git describe --always)"
