@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.7.0](https://github.com/voxpupuli/container_modulesync_configs/tree/v1.7.0) (2026-08-27)
+
+[Full Changelog](https://github.com/voxpupuli/container_modulesync_configs/compare/v1.6.0...v1.7.0)
+
+**Implemented enhancements:**
+
+- feat: make renovate a dynamic template [\#97](https://github.com/voxpupuli/container_modulesync_configs/pull/97) ([rwaffen](https://github.com/rwaffen))
+- fix: enable auto-merge after approval [\#92](https://github.com/voxpupuli/container_modulesync_configs/pull/92) ([rwaffen](https://github.com/rwaffen))
+- feat: disable GitHub Actions updates in renovate package rules [\#85](https://github.com/voxpupuli/container_modulesync_configs/pull/85) ([rwaffen](https://github.com/rwaffen))
+
+**Merged pull requests:**
+
+- chore\(deps\): update github/codeql-action action to v4.37.9 [\#98](https://github.com/voxpupuli/container_modulesync_configs/pull/98) ([renovate[bot]](https://github.com/apps/renovate))
+- chore\(deps\): update actions/attest action to v4.2.2 [\#96](https://github.com/voxpupuli/container_modulesync_configs/pull/96) ([renovate[bot]](https://github.com/apps/renovate))
+- chore\(deps\): update github/codeql-action action to v4.37.6 [\#95](https://github.com/voxpupuli/container_modulesync_configs/pull/95) ([renovate[bot]](https://github.com/apps/renovate))
+- chore\(deps\): update davidanson/markdownlint-cli2-action action to v24.2.0 [\#94](https://github.com/voxpupuli/container_modulesync_configs/pull/94) ([renovate[bot]](https://github.com/apps/renovate))
+- ci: add workflow for updating a specific container; simplify updating all [\#93](https://github.com/voxpupuli/container_modulesync_configs/pull/93) ([rwaffen](https://github.com/rwaffen))
+- chore\(deps\): update github/codeql-action action to v4.37.4 - autoclosed [\#90](https://github.com/voxpupuli/container_modulesync_configs/pull/90) ([renovate[bot]](https://github.com/apps/renovate))
+- chore\(deps\): update actions/attest action to v4.2.1 [\#89](https://github.com/voxpupuli/container_modulesync_configs/pull/89) ([renovate[bot]](https://github.com/apps/renovate))
+- chore\(deps\): update docker/login-action action to v4.6.0 [\#88](https://github.com/voxpupuli/container_modulesync_configs/pull/88) ([renovate[bot]](https://github.com/apps/renovate))
+- chore\(deps\): update docker/login-action action to v4.5.2 [\#87](https://github.com/voxpupuli/container_modulesync_configs/pull/87) ([renovate[bot]](https://github.com/apps/renovate))
+- chore: add comments to renovate.jsonc.erb for modulesync management [\#86](https://github.com/voxpupuli/container_modulesync_configs/pull/86) ([rwaffen](https://github.com/rwaffen))
+
 ## [v1.6.0](https://github.com/voxpupuli/container_modulesync_configs/tree/v1.6.0) (2026-07-24)
 
 [Full Changelog](https://github.com/voxpupuli/container_modulesync_configs/compare/v1.5.0...v1.6.0)
@@ -11,8 +34,13 @@ All notable changes to this project will be documented in this file.
 - feat: add container vulnerability scanning and issue update workflow [\#81](https://github.com/voxpupuli/container_modulesync_configs/pull/81) ([rwaffen](https://github.com/rwaffen))
 - feat: add release preamble configuration to RELEASE.md and config\_defaults.yml [\#78](https://github.com/voxpupuli/container_modulesync_configs/pull/78) ([rwaffen](https://github.com/rwaffen))
 
+**Fixed bugs:**
+
+- fix:  set trivy to repo settings, fix regression [\#84](https://github.com/voxpupuli/container_modulesync_configs/pull/84) ([rwaffen](https://github.com/rwaffen))
+
 **Merged pull requests:**
 
+- chore\(deps\): update docker/login-action action to v4.5.1 [\#82](https://github.com/voxpupuli/container_modulesync_configs/pull/82) ([renovate[bot]](https://github.com/apps/renovate))
 - chore\(deps\): update docker/login-action action to v4.5.0 [\#80](https://github.com/voxpupuli/container_modulesync_configs/pull/80) ([renovate[bot]](https://github.com/apps/renovate))
 - chore\(deps\): update ruby/setup-ruby action to v1.321.0 [\#77](https://github.com/voxpupuli/container_modulesync_configs/pull/77) ([renovate[bot]](https://github.com/apps/renovate))
 
