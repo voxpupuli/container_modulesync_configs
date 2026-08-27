@@ -287,10 +287,16 @@ tags.
 
 ### `.github/renovate.jsonc`
 
-Enables Renovate with `config:recommended`, immediate pull requests, auto-merge
-by pull request, and security labels for vulnerability alerts. Additional regex
-managers read versions from `build_versions.yaml`, `build_platforms.yaml`, and
-`Containerfile` for Rubygems dependencies.
+Enables Renovate with `config:recommended`, immediate pull requests, and
+security labels for vulnerability alerts. GitHub Actions are excluded because
+ModuleSync updates them centrally. The generated configuration can be adapted
+to each repository with the following variables.
+
+| Variable | Type | Description |
+| --- | --- | --- |
+| `renovate_custom_managers` | Array | Regex manager definitions |
+| `renovate_custom_datasources` | Object | Custom datasource definitions |
+| `renovate_package_rules` | Array | Additional package rules |
 
 ## Delete Defaults
 
