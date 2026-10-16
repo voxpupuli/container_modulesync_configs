@@ -150,6 +150,7 @@ diagnostic jobs, vulnerability issues, and Docker Hub description updates.
 | `publish_tags` | `[]` | Tags for the publish action |
 | `publish_attestation_subject` | empty | Enables `actions/attest` for the built image |
 | `publish_manifest_steps` | `[]` | Enables the job that creates multi-arch manifests |
+| `publish_manifest_if` | empty | Job-level `if:` for the manifest job, e.g. to keep publishing the matrix legs whose builds passed |
 | `publish_info_container` | empty | Enables a diagnostic job in this container |
 | `publish_info_commands` | `[]` | Commands for the diagnostic job |
 | `publish_vulnerability_issue_image` | empty | Image scanned by Grype and Trivy with previews in an issue and full reports as an artifact |
