@@ -76,6 +76,7 @@ RELEASE.md:
   publish_setup_steps: []
   publish_manifest_matrix_command:
   publish_manifest_steps: []
+  publish_manifest_if:
   publish_attestation_subject:
   publish_info_container:
   publish_info_commands: []
