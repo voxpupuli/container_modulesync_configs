@@ -57,6 +57,7 @@ Example:
 | `moduleroot/.github/labeler.yml.erb` | `.github/labeler.yml` | Labeler rule for release branches | no |
 | `moduleroot/.github/release.yml.erb` | `.github/release.yml` | GitHub release note categories | no |
 | `moduleroot/.github/renovate.jsonc.erb` | `.github/renovate.jsonc` | Renovate configuration for container repositories | no |
+| `moduleroot/.github/scripts/update_vulnerability_issue.rb.erb` | `.github/scripts/update_vulnerability_issue.rb` | Updates the latest-image vulnerability issue | no |
 | `moduleroot/.github/workflows/build_container.yml.erb` | `.github/workflows/build_container.yml` | Builds and publishes containers | yes |
 | `moduleroot/.github/workflows/ci.yml.erb` | `.github/workflows/ci.yml` | Pull request CI for container builds and tests | yes |
 | `moduleroot/.github/workflows/labeler.yml.erb` | `.github/workflows/labeler.yml` | Pull request labeler workflow | no |
@@ -68,7 +69,7 @@ Example:
 | `moduleroot/.markdownlint-cli2.yaml.erb` | `.markdownlint-cli2.yaml` | Ignore rules for markdownlint-cli2 | no |
 | `moduleroot/.markdownlint.yaml.erb` | `.markdownlint.yaml` | Markdownlint rules | no |
 | `moduleroot/Gemfile.erb` | `Gemfile` | Release gems for changelog generation | no |
-| `moduleroot/RELEASE.md.erb` | `RELEASE.md` | Release process for maintainers | no |
+| `moduleroot/RELEASE.md.erb` | `RELEASE.md` | Release process for maintainers | yes |
 | `moduleroot/Rakefile.erb` | `Rakefile` | Rake task for changelog generation | yes |
 
 ## Dynamic Templates
@@ -109,7 +110,6 @@ merge Dependabot and Renovate pull requests after successful CI.
 | `test_repository` | empty | Optional repository checked out before tests |
 | `test_commands` | `[]` | Shell commands for the `Test image` step |
 | `post_test_commands` | `[]` | Shell commands for diagnostics after tests |
-| `automerge` | `true` | Enables auto-merge for Dependabot and Renovate pull requests |
 
 Example:
 
@@ -128,7 +128,7 @@ Example:
 Creates the publish workflow for container images. The workflow reacts to
 pushes to `main_branches`, tags, optional schedules, and manual starts. It can
 create pre-build steps, matrix builds, attestations, multi-arch manifests,
-diagnostic jobs, and Docker Hub description updates.
+diagnostic jobs, vulnerability issues, and Docker Hub description updates.
 
 | Variable | Default | Description |
 | --- | --- | --- |
@@ -150,8 +150,10 @@ diagnostic jobs, and Docker Hub description updates.
 | `publish_tags` | `[]` | Tags for the publish action |
 | `publish_attestation_subject` | empty | Enables `actions/attest` for the built image |
 | `publish_manifest_steps` | `[]` | Enables the job that creates multi-arch manifests |
+| `publish_manifest_if` | empty | Job-level `if:` for the manifest job, e.g. to keep publishing the matrix legs whose builds passed |
 | `publish_info_container` | empty | Enables a diagnostic job in this container |
 | `publish_info_commands` | `[]` | Commands for the diagnostic job |
+| `publish_vulnerability_issue_image` | empty | Image scanned by Grype and Trivy with previews in an issue and full reports as an artifact |
 | `dockerhub_repository` | empty | Enables updating the Docker Hub description |
 
 Structure for `publish_setup_steps`, `publish_pre_build_steps`, and
@@ -280,12 +282,22 @@ Documents the release process: create the `release-vX.Y.Z` release branch,
 generate the changelog, merge the pull request, then tag on `main` and push the
 tags.
 
+| Variable | Type | Description |
+| --- | --- | --- |
+| `release_preamble` | String | Optional repository-specific introduction |
+
 ### `.github/renovate.jsonc`
 
-Enables Renovate with `config:recommended`, immediate pull requests, auto-merge
-by pull request, and security labels for vulnerability alerts. Additional regex
-managers read versions from `build_versions.yaml`, `build_platforms.yaml`, and
-`Containerfile` for Rubygems dependencies.
+Enables Renovate with `config:recommended`, immediate pull requests, and
+security labels for vulnerability alerts. GitHub Actions are excluded because
+ModuleSync updates them centrally. The generated configuration can be adapted
+to each repository with the following variables.
+
+| Variable | Type | Description |
+| --- | --- | --- |
+| `renovate_custom_managers` | Array | Regex manager definitions |
+| `renovate_custom_datasources` | Object | Custom datasource definitions |
+| `renovate_package_rules` | Array | Additional package rules |
 
 ## Delete Defaults
 

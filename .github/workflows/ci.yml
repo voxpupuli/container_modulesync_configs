@@ -1,0 +1,36 @@
+name: 🚦 CI
+
+on:
+  merge_group: {}
+  pull_request: {}
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    name: Run msync --noop against all modules
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup ruby
+        uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1.336.0
+        with:
+          ruby-version: ruby
+          bundler-cache: true
+
+      - name: Run msync --noop
+        run: bundle exec msync update --noop --git-base=https://github.com/ --branch foobranch
+
+  tests:
+    needs:
+      - unit
+    runs-on: ubuntu-latest
+    name: Test suite
+    steps:
+      - run: echo Test suite completed

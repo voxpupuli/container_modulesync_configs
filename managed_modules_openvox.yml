@@ -1,5 +1,6 @@
 ---
 - container-openvoxserver
 - container-openvoxdb
+- container-openvoxdb-postgres
 - container-openvoxagent
 - container-openbolt

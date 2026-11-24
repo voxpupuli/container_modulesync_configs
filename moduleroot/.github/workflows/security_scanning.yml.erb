@@ -34,11 +34,11 @@ jobs:
       build-matrix: ${{ steps.build-matrix.outputs.build-matrix }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 <%- if @configs['matrix_requires_yq'] -%>
 
       - name: Install yq
-        uses: dcarbone/install-yq-action@v1.3.1
+        uses: dcarbone/install-yq-action@4075b4dca348d74bd83f2bf82d30f25d7c54539b # v1.3.1
 <%- end -%>
 
       - name: Generate build matrix
@@ -62,10 +62,10 @@ jobs:
       security-events: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Build image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: <%= @configs['build_context'] %>
           file: <%= @configs['build_file'] %>
@@ -84,7 +84,7 @@ jobs:
 
       - name: Scan image with Anchore Grype
         id: scan
-        uses: anchore/scan-action@v7
+        uses: anchore/scan-action@11983a512817154c80a9db660c1a184be7513ed6 # v7.4.3
         with:
           image: '<%= @configs['image_tag'] %>'
           fail-build: <%= @configs['fail_build'] %>
@@ -96,7 +96,7 @@ jobs:
         run: jq . "${{ steps.scan.outputs.sarif }}"
 
       - name: Upload SARIF report
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
 <%- if @configs['sarif_category'] -%>

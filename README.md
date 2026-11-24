@@ -128,7 +128,6 @@ requests in the target repositories:
 
 ```shell
 export GITHUB_TOKEN="your_github_pat"
-export GITHUB_BASE_URL="https://api.github.com"
 ```
 
 Run ModuleSync for one repository:
@@ -139,6 +138,9 @@ bundle exec msync update \
   --pr \
   --pr-labels modulesync \
   --pr-title "chore: Modulesync ($(git describe --always))" \
+  --rebase \
+  --sign \
+  --signoff \
   --message "chore: Modulesync update"
 ```
 
@@ -149,6 +151,9 @@ bundle exec msync update \
   --pr \
   --pr-labels modulesync \
   --pr-title "chore: Modulesync ($(git describe --always))" \
+  --rebase \
+  --sign \
+  --signoff \
   --message "chore: Modulesync update"
 ```
 
@@ -161,6 +166,9 @@ bundle exec msync update \
   --pr \
   --pr-labels modulesync \
   --pr-title "chore: Modulesync ($(git describe --always))" \
+  --rebase \
+  --sign \
+  --signoff \
   --message "chore: Modulesync update"
 ```
 
@@ -198,3 +206,13 @@ release pull request is merged, maintainers tag `main` with `vX.Y.Z` and push
 the tag.
 
 The exact commands are documented in `RELEASE.md`.
+
+## Run pinact
+
+```shell
+# for standard workflows
+pinact run -u
+
+# for the workflows in moduleroot/.github
+for i in $(find moduleroot/.github/*); do pinact run -u $i; done
+```
